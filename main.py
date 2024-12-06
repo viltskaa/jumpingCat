@@ -2,13 +2,12 @@ import random
 
 import pygame
 import config
+import cv2
 
 from sprites import Cat, Platform, Ground, Background, MovingPlatform
 from CameraObject import Camera
 
 pygame.init()
-
-background = Background()
 
 running = True
 FRAMERATE = 60
@@ -17,6 +16,8 @@ screen = pygame.display.set_mode(
      config.HEIGHT)
 )
 clock = pygame.time.Clock()
+
+background = Background()
 
 total_level_width = 5000  # Высчитываем фактическую ширину уровня
 total_level_height = 5000  # высоту
@@ -55,6 +56,28 @@ def despawn_platform():
 
 
 if __name__ == '__main__':
+    video = cv2.VideoCapture("video/0001-0048.mp4")
+
+    success, video_image = video.read()
+    fps = video.get(cv2.CAP_PROP_FPS)
+
+    while success:
+        clock.tick(int(fps))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                break
+
+        success, video_image = video.read()
+
+        if success:
+            resized_image = cv2.resize(video_image,
+                                       (config.WIDTH, config.HEIGHT),
+                                       interpolation=cv2.INTER_LINEAR)
+            video_surf = pygame.image.frombuffer(resized_image.tobytes(), resized_image.shape[1::-1], "BGR")
+            screen.blit(video_surf, (0, 0))
+            pygame.display.flip()
+
     while running:
         clock.tick(FRAMERATE)
         for event in pygame.event.get():
@@ -95,10 +118,31 @@ if __name__ == '__main__':
         if not need_spawn:
             need_spawn = platforms[-1].rect.y == cat.rect.bottomleft[1]
 
-        screen.fill((0, 0, 0))
+        screen.fill((204, 205, 224))
         for e in entities:
             screen.blit(e.image, camera.apply(e))
 
         pygame.display.flip()
+
+    video = cv2.VideoCapture("video/gameover.mp4")
+    success, video_image = video.read()
+    fps = video.get(cv2.CAP_PROP_FPS)
+
+    while success:
+        clock.tick(int(fps))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                break
+
+        success, video_image = video.read()
+
+        if success:
+            resized_image = cv2.resize(video_image,
+                                       (config.WIDTH, config.HEIGHT),
+                                       interpolation=cv2.INTER_LINEAR)
+            video_surf = pygame.image.frombuffer(resized_image.tobytes(), resized_image.shape[1::-1], "BGR")
+            screen.blit(video_surf, (0, 0))
+            pygame.display.flip()
 
     pygame.quit()

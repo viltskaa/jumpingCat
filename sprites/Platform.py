@@ -6,10 +6,8 @@ class Platform(sprite.Sprite):
                  *groups: sprite.AbstractGroup,
                  x: int, y: int,
                  width: int = 128,
-                 height: int = 16,
-                 color: str = "#00ff00"):
+                 height: int = 16):
         super().__init__(*groups)
 
-        self.image = Surface((width, height))
-        self.image.fill(Color(color))
+        self.image = image.load('assets/platform.png')
         self.rect = Rect(x, y, width, height)
