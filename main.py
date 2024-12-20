@@ -2,7 +2,6 @@ import random
 
 import pygame
 import config
-import cv2
 
 from sprites import Cat, Platform, Ground, Background, MovingPlatform
 from CameraObject import Camera
@@ -56,28 +55,6 @@ def despawn_platform():
 
 
 if __name__ == '__main__':
-    video = cv2.VideoCapture("video/0001-0048.mp4")
-
-    success, video_image = video.read()
-    fps = video.get(cv2.CAP_PROP_FPS)
-
-    while success:
-        clock.tick(int(fps))
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                break
-
-        success, video_image = video.read()
-
-        if success:
-            resized_image = cv2.resize(video_image,
-                                       (config.WIDTH, config.HEIGHT),
-                                       interpolation=cv2.INTER_LINEAR)
-            video_surf = pygame.image.frombuffer(resized_image.tobytes(), resized_image.shape[1::-1], "BGR")
-            screen.blit(video_surf, (0, 0))
-            pygame.display.flip()
-
     while running:
         clock.tick(FRAMERATE)
         for event in pygame.event.get():
@@ -123,26 +100,5 @@ if __name__ == '__main__':
             screen.blit(e.image, camera.apply(e))
 
         pygame.display.flip()
-
-    video = cv2.VideoCapture("video/gameover.mp4")
-    success, video_image = video.read()
-    fps = video.get(cv2.CAP_PROP_FPS)
-
-    while success:
-        clock.tick(int(fps))
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                break
-
-        success, video_image = video.read()
-
-        if success:
-            resized_image = cv2.resize(video_image,
-                                       (config.WIDTH, config.HEIGHT),
-                                       interpolation=cv2.INTER_LINEAR)
-            video_surf = pygame.image.frombuffer(resized_image.tobytes(), resized_image.shape[1::-1], "BGR")
-            screen.blit(video_surf, (0, 0))
-            pygame.display.flip()
 
     pygame.quit()
